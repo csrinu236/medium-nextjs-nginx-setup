@@ -5,15 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - nextjs-app-build:/app # Named volume for nextjs-app app folder
   nginx:
     image: csrinu236/medium-nginx-app # Placeholder for pushing image to Dockerhub
     build:
       context: ./nginx-docker
       dockerfile: Dockerfile
-    volumes:
-      - nextjs-app-build:/app # Mount the named volume to Nginx's /app
     depends_on:
       - nextjs-app
     ports:
@@ -24,5 +20,3 @@ services:
     # this is for parsing the convert-nginx.sh file into nginx.conf file after supplying environment vars,
     # to get the resultant nginx.conf file in different environments.
     # We also supply kubernetes specific env vars in deployment.yml file
-volumes:
-  nextjs-app-build: # Define the named volume
