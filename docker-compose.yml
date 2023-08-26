@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  nextjs-app:
+    image: csrinu236/medium-nextjs-app # Placeholder for pushing image to Dockerhub
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - nextjs-app-build:/app # Named volume for nextjs-app app folder
+  nginx:
+    image: csrinu236/medium-nginx-app # Placeholder for pushing image to Dockerhub
+    build:
+      context: ./nginx-docker
+      dockerfile: Dockerfile
+    volumes:
+      - nextjs-app-build:/app # Mount the named volume to Nginx's /app
+    depends_on:
+      - nextjs-app
+    ports:
+      - '8080:8080'
+    environment:
+      - NEXTJS_CONTAINER_IP=nextjs-app # supplying environment vars for convert-nginx.sh file.
+    command: ['sh', '/etc/nginx/convert-nginx.sh']
+    # this is for parsing the convert-nginx.sh file into nginx.conf file after supplying environment vars,
+    # to get the resultant nginx.conf file in different environments.
+    # We also supply kubernetes specific env vars in deployment.yml file
+volumes:
+  nextjs-app-build: # Define the named volume

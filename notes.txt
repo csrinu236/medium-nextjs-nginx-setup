@@ -1,0 +1,28 @@
+Shell Interpreters:
+
+/bin/sh: The default system shell.
+/bin/bash: The Bash shell, a widely used and powerful shell.
+/bin/zsh: The Zsh shell, known for its extended features.
+/bin/dash: A minimal shell optimized for scripting.
+
+
+Language Interpreters:
+
+/usr/bin/python: The Python interpreter.
+/usr/bin/ruby: The Ruby interpreter.
+/usr/bin/perl: The Perl interpreter.
+/usr/local/bin/node: The Node.js interpreter.
+
+
+Executable shells
+1) Mac & Linux => zsh and bash
+2) Windows:
+  a)Windows Command Prompt
+  b)cmd.exe
+  c)Advanced Windows Shell: PowerShell
+
+In the context of Docker, /bin/sh is often used as the 
+default shell interpreter for running commands within the 
+container. When you specify a command to run in a Docker container 
+without explicitly specifying an interpreter (like /bin/bash, /bin/zsh, etc.), 
+the default is often /bin/sh.
