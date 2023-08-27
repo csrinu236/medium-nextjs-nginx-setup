@@ -5,9 +5,6 @@
 /.pnp
 .pnp.js
 
-/deployment.yml
-/service.yml
-
 # testing
 /coverage
 
