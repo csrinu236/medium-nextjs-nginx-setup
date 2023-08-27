@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: #<name of the deployment>
+  #kubectl create deployment <name of deployment>
+  name: nextjs-app-deployment
+spec: # this spec corresponds to cofig of deployment object
+  replicas: 1 # no.of pod instances for load balacing purpose
+  selector:
+    # this is for targetting Pods with the specified labels(defined below in template of the pod)
+    # so that this deployment(when pushed) can only alter/update those pods with mentioned key and value in K8.
+    # In other words, to target already existing older deployment pods inorder to replace them with latest rollouts
+    matchLabels:
+      app: nextjs-app
+  template: # here we define configurations of single pod
+    metadata:
+      labels: # here we define labels of single pod to get targetted by multiple object resources like Deployments, Services, etc
+        app: nextjs-app
+    spec:
+      initContainers:
+        - name: init-container-nextjs
+          image: csrinu236/medium-nextjs-app:latest
+          command: ['sh', '-c', 'cp -r /app/* /temp']
+          volumeMounts:
+            - name: nextjs-shared-volume
+              mountPath: /temp
+
+      # containers:
+      #   - name: #<container name>
+      #     image: #<Image name from any regsitry like DockerHub>:<tag of the image>
+      containers:
+        - name: medium-nextjs-app
+          image: csrinu236/medium-nextjs-app:latest
+          # image: nextjs-nginx-setup-nextjs-app:latest
+          #:<latest> is needed if you always want K8 to pull the latest image
+          # or if you manually specify latest version of the image(say like #image: nextjs-nginx-setup-nextjs-app:v3), then also it
+          # pulls that specific version of image from remote-registry.
+          imagePullPolicy: Always
+          # imagePullPolicy: Always, means K8 always pulls the latest image(irrespective of you mention latest tag or latest version tag after image name.)
+          # from registry, means equivalent to image: <image-name>:latest
+          resources:
+            limits:
+              cpu: 300m
+              memory: 384Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          command: ['npm', 'run', 'start']
+          volumeMounts:
+            - name: nextjs-shared-volume
+              mountPath: /app
+
+        - name: medium-nginx-app
+          image: csrinu236/medium-nginx-app:latest
+          imagePullPolicy: Always
+          env:
+            - name: NEXTJS_CONTAINER_IP
+              value: localhost
+          resources:
+            limits:
+              cpu: 300m
+              memory: 384Mi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          command: ['sh', '-c', '/etc/nginx/convert-nginx.sh']
+          volumeMounts:
+            - name: nextjs-shared-volume
+              mountPath: /app
+      volumes:
+        - name: nextjs-shared-volume
+          emptyDir: {}

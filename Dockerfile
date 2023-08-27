@@ -26,4 +26,4 @@ COPY --from=builder /temp/node_modules ./node_modules
 COPY --from=builder /temp/package.json ./package.json
 
 
-CMD [ "npm", "run", "start" ]
+# CMD [ "npm", "run", "start" ]

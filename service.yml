@@ -1,0 +1,22 @@
+# kubectl apply -f=deployment.yaml -f=service.yaml
+# kubectl delete services <service name(nextjs-app-service)>
+# minikube service nextjs-app-service
+# minikube service <service name => nextjs-app-service> => opens up the portal
+apiVersion: v1
+kind: Service
+metadata: #<name of the Service>
+  #kubectl create service <name of service>
+  name: nextjs-app-service
+spec: # this spec corresponds to config of service object
+  selector:
+    app: nextjs-app # we are targetting the pod with these labels(these key value pairs)
+  # kubectl expose deployment <deplo name> --port=...  --type: LoadBalancer
+  # services have simple syntax for selecting pods unlike deployments which have nested and more powerful deployment syntax.
+
+  ports:
+    - protocol: 'TCP'
+      port: 8080 # outside world exposed port
+      targetPort: 8080 # containers internal port
+  # type: ClustorIP
+  # type: NodePort
+  type: LoadBalancer # outside world access
